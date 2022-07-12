@@ -41,7 +41,7 @@ class Tag(models.Model):
 class Post(models.Model):
     author = models.ForeignKey('User', on_delete=models.CASCADE)
     category = models.ForeignKey('Category', on_delete=models.PROTECT)
-    tag = models.ManyToManyField('Tag', blank=True)
+    tag = models.ManyToManyField('Tag', blank=True, related_name="tags")
     title = models.CharField('Title', max_length=255)
     slug = models.SlugField('*', unique=True)
     body = EditorJsJSONField(

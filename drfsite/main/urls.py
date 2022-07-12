@@ -1,14 +1,20 @@
-from django.urls import path
+from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+
 from .views import (
     PostAPIView, 
     PostAddApiView, 
     PostUpdateApiView, 
     PostDeleteApiView, 
-    PostDetailApiView
+    PostDetailApiView,
+    CategoryListAPIView,
+    PostCommentAddModelViewSet
 )
 
 app_name = 'main'
+
+router = DefaultRouter()
+router.register(r'comments', PostCommentAddModelViewSet, basename='post-comments')
 
 urlpatterns = [
     # post path
@@ -18,5 +24,8 @@ urlpatterns = [
     path('post-delete/<int:pk>/', PostDeleteApiView.as_view(), name='post_delete'),
     path('post-detail/<slug:slug>/', PostDetailApiView.as_view(), name='post_detail'),
     # end post path
-    
+    # category path
+    path('category-list/', CategoryListAPIView.as_view(), name='category-list'),
+    # post comments include
+    path('post-comments/', include(router.urls))
 ]

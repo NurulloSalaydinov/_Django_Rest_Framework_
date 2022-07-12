@@ -1,10 +1,21 @@
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Post
-from .serializers import PostSerializer
+from .models import Post, Category, PostComment
+from .serializers import PostSerializer, CategorySerializer, PostCommentSerializer
 from .rest_paginations import StandardResultsSetPagination
+from rest_framework import permissions
+from rest_framework import viewsets
 
+class PostCommentAddModelViewSet(viewsets.ModelViewSet):
+    queryset = PostComment.objects.all()
+    serializer_class = PostCommentSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+# CategoryListApiView
+class CategoryListAPIView(generics.ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
 
 
 # Post List Api View

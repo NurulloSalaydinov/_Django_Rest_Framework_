@@ -1,11 +1,10 @@
 from rest_framework import serializers
 
+from .models import Post
 
 
-class WomenSerializer(serializers.Serializer):
-    title = serializers.CharField(max_length=255)
-    content = serializers.CharField(max_length=555)
-    time_create = serializers.DateTimeField()
-    time_update = serializers.DateTimeField()
-    is_published = serializers.BooleanField(default=True)
-    cat_id = serializers.IntegerField()
+class PostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = '__all__'
+        read_only_fields = ['created_at']

@@ -7,15 +7,6 @@ from .rest_paginations import StandardResultsSetPagination
 from rest_framework import permissions
 from rest_framework import viewsets
 
-class PostCommentAddModelViewSet(viewsets.ModelViewSet):
-    queryset = PostComment.objects.all()
-    serializer_class = PostCommentSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-# CategoryListApiView
-class CategoryListAPIView(generics.ListAPIView):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
 
 
 # Post List Api View
@@ -63,11 +54,26 @@ class PostDeleteApiView(APIView):
             return Response({"error": "You are not author of this post"})
         return Response({'status': 200})
 
+
 # Post Detail
 class PostDetailApiView(APIView):
     def get(self, request, slug):
         post = Post.objects.get(slug=slug)
         return Response({"detail": PostSerializer(post).data})
+
+
+# CategoryListApiView
+class CategoryListAPIView(generics.ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+
+# PostCommentAddApiView
+class PostCommentAddApiView(generics.CreateAPIView):
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+        
+
 
 # class WomenAPIView(APIView):
 #     def get(self, request):
@@ -87,7 +93,6 @@ class PostDetailApiView(APIView):
 #                 content=content,
 #                 cat_id=cat_id,
 #             )
-#             # https://just-watch.club/watch/tt10648342/thor-love-and-thunder-2022/#/flow=w4aDWH+cdn.vddf0.club/s1=mnlove/c_hs=4509073
 #             return Response({'title': title, 'content': content, 'id': post_new.id})
 #         else:
 #             return Response({'error': 'Try Again'})

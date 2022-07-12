@@ -8,13 +8,10 @@ from .views import (
     PostDeleteApiView, 
     PostDetailApiView,
     CategoryListAPIView,
-    PostCommentAddModelViewSet
+    PostCommentAddApiView
 )
 
 app_name = 'main'
-
-router = DefaultRouter()
-router.register(r'comments', PostCommentAddModelViewSet, basename='post-comments')
 
 urlpatterns = [
     # post path
@@ -26,6 +23,7 @@ urlpatterns = [
     # end post path
     # category path
     path('category-list/', CategoryListAPIView.as_view(), name='category-list'),
-    # post comments include
-    path('post-comments/', include(router.urls))
+    # post comment path
+    path('post-comment-new', PostCommentAddApiView.as_view(), name='post-comment-new'),
+    # end post comment path
 ]

@@ -1,5 +1,3 @@
-import json
-from django.forms import model_to_dict
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -58,7 +56,6 @@ class PostDeleteApiView(APIView):
 class PostDetailApiView(APIView):
     def get(self, request, slug):
         post = Post.objects.get(slug=slug)
-        print(model_to_dict(post).values())
         return Response({"detail": PostSerializer(post).data})
 
 # class WomenAPIView(APIView):

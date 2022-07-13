@@ -13,8 +13,8 @@ class User(AbstractUser):
         'User', blank=True, related_name="who_admiring")
     admirer = models.ManyToManyField(
         'User', blank=True, related_name="who_admirer")
-    created_at = models.DateTimeField("Created at", auto_now_add=True)
-    updated_at = models.DateTimeField("Updated_at", auto_now=True)
+    created_at = models.DateField("Created at", auto_now_add=True)
+    updated_at = models.DateField("Updated_at", auto_now=True)
 
     def __str__(self):
         return str(self.username)
@@ -140,8 +140,9 @@ class Post(models.Model):
     post_views = models.IntegerField(default=0)
     post_likes = models.IntegerField(default=0)
     post_bugs = models.IntegerField(default=0)
-    created_at = models.DateTimeField("Created at", auto_now_add=True)
-    updated_at = models.DateTimeField("Updated at", auto_now=True)
+    post_comment_count = models.IntegerField(default=0)
+    created_at = models.DateField("Created at", auto_now_add=True)
+    updated_at = models.DateField("Updated at", auto_now=True)
 
     def __str__(self):
         return str(self.title)
@@ -152,6 +153,7 @@ class PostComment(models.Model):
     post = models.ForeignKey(
         'Post', on_delete=models.CASCADE, related_name='post_comments')
     message = models.CharField('Message', max_length=255)
+    created_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return str(self.message)
@@ -162,6 +164,7 @@ class ReplyPostComment(models.Model):
     comment = models.ForeignKey(
         'PostComment', on_delete=models.CASCADE, related_name='post_reply_comments')
     message = models.CharField('Message', max_length=255)
+    created_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return str(self.message)

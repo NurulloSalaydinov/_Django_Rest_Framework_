@@ -1,8 +1,19 @@
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Post, Category, PostComment
-from .serializers import PostSerializer, CategorySerializer, PostCommentSerializer
+from .models import (
+    Post,
+    Category,
+    PostComment,
+    Tag,
+)
+from .serializers import (
+    PostSerializer, 
+    CategorySerializer, 
+    PostCommentSerializer,
+    TagSerializer,
+    PostCommentUpdateSerializer,
+)
 from .rest_paginations import StandardResultsSetPagination
 from rest_framework import permissions
 from rest_framework import viewsets
@@ -68,38 +79,56 @@ class CategoryListAPIView(generics.ListAPIView):
     serializer_class = CategorySerializer
 
 
+# TagListApiView
+class TagListApiView(generics.ListAPIView):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+
+
 # PostCommentAddApiView
 class PostCommentAddApiView(generics.CreateAPIView):
+    queryset = PostComment.objects.all()
+    serializer_class = PostCommentSerializer
+
     def post(self, request, *args, **kwargs):
-        print(request.POST)
-        
+        writer = request.POST.get('writer')
+        post = request.POST.get('post')
+        msg = request.POST.get('message')
+        if writer and post and msg:
+            if int(writer) == request.user.id:
+                obj = Post.objects.get(id=int(post))
+                obj.post_comment_count += 1
+                obj.save()
+                return self.create(request, *args, **kwargs)
+            else:
+                return Response({"hack error": "you can't cheat me"})
+        else:
+            return Response({"error": "you must fill all field"})
 
 
-# class WomenAPIView(APIView):
-#     def get(self, request):
-#         w = Women.objects.all()
-#         return Response({'data': WomenSerializer(w, many=True).data})
-    
-#     def post(self, request):
-#         print(request.data)
-#         # return Response({'status': 200})
-#         d = request.data
-#         title = d.get('title')
-#         content = d.get('content')
-#         cat_id = d.get('cat_id')
-#         if title and content and cat_id:
-#             post_new = Women.objects.create(
-#                 title = title,
-#                 content=content,
-#                 cat_id=cat_id,
-#             )
-#             return Response({'title': title, 'content': content, 'id': post_new.id})
-#         else:
-#             return Response({'error': 'Try Again'})
-#     def delete(self, request):
-#         print('delete: Delete', request.data)
+# PostCommentUpdateView
+class PostCommentUpdateView(generics.UpdateAPIView):
+    queryset = PostComment.objects.all()
+    serializer_class = PostCommentUpdateSerializer
 
-#     def put(self, request):
-#         print('Put: Update', request.data)
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+
+# post comment delete view
+class PostCommentDeleteView(APIView):
+    def delete(self, request, pk):
+        try:
+            obj = PostComment.objects.get(id=pk)
+        except:
+            return Response({"error": "method delete is not allowed"})
+        if obj.writer == request.user:
+            obj.delete()
+        else:
+            return Response({"error": "You are not author of this post"})
+        return Response({'status': 200})
 
 

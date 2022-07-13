@@ -11,7 +11,8 @@ from .views import (
     TagListApiView,
     PostCommentAddApiView,
     PostCommentUpdateView,
-    PostCommentDeleteView
+    PostCommentDeleteView,
+    PostCommentsApiView,
 )
 
 app_name = 'main'
@@ -34,5 +35,6 @@ urlpatterns = [
     path('post-comment-update/<int:pk>/', PostCommentUpdateView.as_view(), name='post-comment-update'),
     # delete
     path('post-comment-delete/<int:pk>/', PostCommentDeleteView.as_view(), name='post-comment-delete'),
+    path('post-related-comments/<slug:slug>/', PostCommentsApiView.as_view(), name='related-comments')
     # end post comment path
 ]

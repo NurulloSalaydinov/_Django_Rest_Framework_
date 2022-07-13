@@ -2,17 +2,19 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import (
-    Post,
     Category,
-    PostComment,
     Tag,
+    Post,
+    PostComment,
+    ReplyPostComment
 )
 from .serializers import (
-    PostSerializer, 
-    CategorySerializer, 
+    PostSerializer,
+    CategorySerializer,
     PostCommentSerializer,
     TagSerializer,
     PostCommentUpdateSerializer,
+    PostAddSerializer,
 )
 from .rest_paginations import StandardResultsSetPagination
 from rest_framework import permissions
@@ -30,7 +32,7 @@ class PostAPIView(generics.ListAPIView):
 # Post Add Api View
 class PostAddApiView(generics.CreateAPIView):
     queryset = Post.objects.all()
-    serializer_class = PostSerializer
+    serializer_class = PostAddSerializer
 
     def post(self, request, *args, **kwargs):
         author = request.POST.get('author')
@@ -132,3 +134,13 @@ class PostCommentDeleteView(APIView):
         return Response({'status': 200})
 
 
+# CommentsRelatedToPost
+class PostCommentsApiView(APIView):
+    def get(self, request, slug):
+        post = Post.objects.get(slug=slug)
+        comments = PostComment.objects.filter(post=post)
+        return Response({"results": PostCommentSerializer(comments, many=True).data})
+
+
+
+# Post Reply Comment

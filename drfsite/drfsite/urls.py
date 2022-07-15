@@ -9,7 +9,8 @@ urlpatterns = [
     path('api/v1/', include('main.urls', namespace='main')),
 
     path('editorjs/', include('django_editorjs_fields.urls')),
-    
+    # path('api/v1/', include('djoser.urls')),
+    # path('api/v1/', include('djoser.urls.authtoken')),
 ]
 
 if settings.DEBUG:
